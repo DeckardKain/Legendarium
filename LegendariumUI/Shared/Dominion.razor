@@ -1,0 +1,48 @@
+﻿@using LegendariumWorld
+@inject IUtilityService UtilityService
+@inject ICharacterService CharacterService
+@inject ILocationService LocationService
+
+<h3>Dominion</h3>
+
+<div class="DominionLayout">
+    <h3>Characters Under Your Control</h3>
+    @foreach(Character character in Characters)
+    {
+        <div class="character">
+            @character.Name
+            @character.Type
+        </div>
+    }
+
+
+</div>
+
+
+
+@code {
+    [CascadingParameter(Name="PlayerInfo")]
+    public int PlayerId { get; set; }
+
+    [Parameter]
+    public Location Location { get; set; }
+    [Parameter]
+    public Character Character { get; set; }
+    [Parameter]
+    public List<Location> Locations { get; set; } = new List<Location>();
+    [Parameter]
+    public List<Character> Characters { get; set; } = new List<Character>();
+    [Parameter]
+    public Player Player { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();        
+        Characters = CharacterService.GetCharactersControlledByPlayer(PlayerId);
+    }
+
+
+
+
+}

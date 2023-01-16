@@ -1,0 +1,183 @@
+﻿@using System.Security.Claims
+@inherits LayoutComponentBase
+@inject ILocalStorageService StorageService
+@inject IToastService ToastService
+@inject IUtilityService UtilityService
+@inject IAuthService AuthService
+
+<CascadingValue Name="PlayerInfo" Value="@PlayerId">
+<PageTitle>Legendarium</PageTitle>
+
+<TopBanner ShowLogin="ShowLogin" ShowRegister="ShowRegister"></TopBanner>
+
+<section class="legendlayout">
+    <div class="legendheader">
+        <AuthorizeView>
+            <Authorized>
+                @if(context.User.Identity.IsAuthenticated)
+                {
+                    <LegendariumUI.Shared.TopMenu></LegendariumUI.Shared.TopMenu>
+                }                
+            </Authorized>
+        </AuthorizeView>
+        
+    </div>
+    <div class="legendleftSide">
+        <AuthorizeView>
+            <Authorized>
+                <GameMenu ShowOverview="ShowOverview"
+                    ShowWorld="ShowWorld" ShowAdventure="ShowAdventure" ShowDominion="ShowDominion"
+                ShowCard="ShowCard" ShowResearch="ShowResearch"></GameMenu>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+    <div class="legendbody">
+        <br />
+        @if(showLogin)
+        {
+            <Login ShowMainPage="ShowMainPage" SetPlayerId="SetPlayerId"></Login>
+        }
+        @if(showRegister)
+        {
+            <Registration></Registration>
+        }
+        <AuthorizeView>
+            <Authorized>
+                @if(showOverview)
+                {
+                    <Overview></Overview>
+                }
+                @if (showWorld)
+                {
+                    <World></World>
+                }
+                @if (showDominion)
+                {
+                    <Dominion></Dominion>
+                }
+                @if (showAdventure)
+                {
+                    <Adventure></Adventure>
+                }
+            </Authorized>
+        </AuthorizeView>
+            
+
+    </div>
+    <div class="legendrightSide">
+        <BlazoredToasts /> 
+    </div>
+    <div class="legendfooter"></div>
+</section>
+</CascadingValue>
+
+@code {
+    public int PlayerId { get; set; }
+    
+
+    [Parameter]
+    public bool showLogin { get; set; } = false;
+    [Parameter]
+    public bool showRegister { get; set; } = false;
+    [Parameter]
+    public bool showMainPage { get; set; } = false;
+    [Parameter]
+    public bool showOverview { get; set; } = false;
+    [Parameter]
+    public bool showWorld { get; set; } = false;
+    [Parameter]
+    public bool showDominion { get; set; } = false;
+    [Parameter]
+    public bool showAdventure { get; set; } = false;
+    [Parameter]
+    public bool showCard { get; set; } = false;
+    [Parameter]
+    public bool showResearch { get; set; } = false;
+
+
+
+    private void SetPlayerId(int value)
+    {
+        PlayerId = value;
+    }
+
+    private void ShowLogin(bool value)
+    {
+        showLogin = value;
+        showRegister = false;
+        showMainPage = false;
+    }
+
+    private void ShowRegister(bool value)
+    {
+        showLogin = false;
+        showRegister = value;
+        showMainPage = false;        
+    }
+    private void ShowMainPage()
+    {
+        showLogin = false;
+        showRegister = false;
+        showMainPage = true;
+    }
+    private void ShowOverview(bool value)
+    {
+        showOverview = value;
+
+        showWorld = false;
+        showDominion = false;
+        showAdventure = false;
+        showCard = false;
+        showResearch = false;
+    }
+    private void ShowWorld(bool value)
+    {       
+        showWorld = value;
+
+        showOverview = false;
+        showDominion = false;
+        showAdventure = false;
+        showCard = false;
+        showResearch = false;
+    }
+    private void ShowDominion(bool value)
+    {
+        showDominion = value;
+
+        showWorld = false;
+        showOverview = false;
+        showAdventure = false;
+        showCard = false;
+        showResearch = false;
+    }
+    private void ShowAdventure(bool value)
+    {
+        showAdventure = value;
+
+        showWorld = false;
+        showDominion = false;
+        showOverview = false;
+        showCard = false;
+        showResearch = false;
+    }
+    private void ShowCard(bool value)
+    {
+        showCard = value;
+
+        showWorld = false;
+        showDominion = false;
+        showAdventure = false;
+        showOverview = false;
+        showResearch = false;
+    }
+    private void ShowResearch(bool value)
+    {
+        showResearch = value;
+
+        showWorld = false;
+        showDominion = false;
+        showAdventure = false;
+        showCard = false;
+        showOverview = false;
+    }
+}

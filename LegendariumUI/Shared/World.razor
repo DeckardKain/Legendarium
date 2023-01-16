@@ -1,0 +1,487 @@
+﻿@using System.Collections.Generic
+@using System.Globalization
+@using BootstrapBlazor.Components
+@using LegendariumLife
+@using LegendariumWorld
+
+@inject IUtilityService UtilityService
+@inject ILocationService LocationService
+@inject IPlanetService PlanetService
+@inject ICharacterService CharacterService
+@inject ICardService CardService
+@inject IAIService AIService
+
+<div class="worldlayout">
+    @if(showPlanet)
+    {
+        <div class="topleft" style="background-image:url('@ImgSrc');background-size:cover;height:300px;width:400px;">
+        </div>
+    }
+    @if (showLocation)
+    {
+        <div class="topleft" style="background-image:url('@ImgSrc');background-size:cover;height:300px;width:400px;">
+        </div>
+    }
+    @if (showCharacter)
+    {
+        <div class="topleft" style="background-image:url('@ImgSrc');background-size:cover;height:300px;width:400px;">
+        </div>
+    }
+    @if (showCard)
+    {
+        <div class="topleft">
+            <p>Name: @Character.Name</p>
+            <p>Type: @Character.Type</p>
+            <h3>Stats</h3>
+            <span></span>
+            <p>Strength: @Character.Strength</p>
+            <p>Agility: @Character.Agility</p>
+            <p>Intellect: @Character.Intellect</p>
+            <p>Dexterity @Character.Dexterity</p>
+            <p>Stamina: @Character.Stamina</p>
+            <p>Dialect: @Character.Dialect</p>
+            <p>Discernment: @Character.Discernement</p>
+        </div>
+    }
+    @if(showGameMapItem)
+    {
+      <div class="topleft" style="background-image:url('@ImgSrc');background-size:cover;height:300px;width:400px;"></div>
+    }
+
+    <div class="topright">
+        @if (showPlanet)
+        {
+            <p>Locations: @Planet.Name</p>
+            <p>Size: @Planet.Size</p>            
+
+           
+        }
+        @if(showLocation)
+        {              
+            <p>Name: @SelectedLocation.Name</p>
+            <p>Size: @SelectedLocation.Size</p>
+            <p>Biome: @SelectedLocation.Biome</p>
+            <p>Location X Range: @SelectedLocation.CoordinateX1 - @SelectedLocation.CoordinateX2</p>
+            <p>Location Y Range: @SelectedLocation.CoordinateY1 - @SelectedLocation.CoordinateY2</p>
+
+            <button class="btn btn-primary" @onclick="GenerateImage">Create Image</button>
+            
+
+@*            <div>
+                <BootstrapInputNumber ShowLabel="true" ShowButton="true" @bind-Value="@inputXCoordinate"
+                                  Min="@SelectedLocation.CoordinateX1.ToString()" Max="@SelectedLocation.CoordinateX2.ToString()" Step="1" Color="Color.Primary" @oninput="OnXInputEvent" />
+                <p> you have selected @inputXCoordinate</p>
+            </div>
+            <div>
+                <BootstrapInputNumber ShowLabel="true" ShowButton="true" @bind-Value="@inputYCoordinate"
+                                  Min="@SelectedLocation.CoordinateY1.ToString()" Max="@SelectedLocation.CoordinateY2.ToString()" Step="1" Color="Color.Primary" @oninput="OnYInputEvent" />
+                <p> you have selected @inputYCoordinate</p>
+            </div>       
+            
+
+            <button class="btn btn-primary" alt="Costs 10 Power" @onclick="Discover">Discover</button>*@
+        }
+        @if(showGameMapItem)
+        {
+            <h3>The @SelectedLocation.Biome Of @SelectedLocation.Name</h3>
+            <p>You have discovered a portion of the world!</p>
+            <p>Located at: @GameMapItem.X - @GameMapItem.Y - @GameMapItem.Z</p>
+            <p>Owner: @if(GameMapItem.PlayerId != null){@GameMapItem.PlayerId}</p>
+            <p>Type: @GameMapItem.Type</p>
+            <p>Power Level: @GameMapItem.PowerLevel </p>
+
+            @if(Resources != null)
+            {
+                @foreach(Resource Resource in Resources)
+                {
+                    @if(Resource != null)
+                    {
+                        <p>Resources: @Resource.Type</p>
+                       @* <p>Resources: @Resource.Name</p>*@
+                        <p>Resources: @Resource.Amount</p>
+                        <p>Attributes:
+                        @if(Resource.Attribute1 != null)
+                        {
+                                 @Resource.Attribute1
+                        }
+                        @if (Resource.Attribute2 != null)
+                        {
+                                 @Resource.Attribute2
+                        }
+                        @if(Resource.Attribute3 != null)
+                        {
+                            @Resource.Attribute3
+                        }
+                        @if(Resource.Attribute4 != null)
+                        {
+                             @Resource.Attribute4
+                        }
+                        </p>
+                    }
+                }
+            }
+
+
+
+            <p>This tile contains:</p>
+            <button class="btn btn-primary" @onclick="CheckForCharacters">Characters</button>
+            <button class="btn btn-primary">Locations</button>
+            <button class="btn btn-primary" @onclick="CheckForResources">Resources</button>
+            <button class="btn btn-primary">Structures</button>            
+            <button class="btn btn-primary">Paths</button>
+        }
+
+        @if(showCharacter)
+        {              
+            <p>Name: @Character.Name</p>
+            <p>Type: @Character.Type</p>
+            <h3>Stats</h3>
+            <span></span>
+            <p>Strength: @Character.Strength</p>
+            <p>Agility: @Character.Agility</p>
+            <p>Intellect: @Character.Intellect</p>
+            <p>Dexterity @Character.Dexterity</p>
+            <p>Stamina: @Character.Stamina</p>
+            <p>Dialect: @Character.Dialect</p>
+            <p>Discernment: @Character.Discernement</p>            
+            
+            <button class="btn btn-primary" alt="" @onclick="Interact">Interact</button>
+        }
+        @if (showCard)
+        {
+            <p>Card Name: @Card.Name</p>
+            <p>Action: @Card.Action</p>
+            <p>Bonuses: @Card.Bonuses</p>
+            <br />
+            <button class="btn btn-primary" @onclick="UseCard">Use</button>
+        }
+
+
+    </div>
+    <div class="breadcrumbs">
+        <text class="b1" @onclick="SelectPlanet">@Planet.Name -&nbsp</text>
+        @foreach(string st in BreadCrumbs)
+        {
+            <div class="b1" @onclick="(() => SelectBreadCrumb(st))">@st -&nbsp</div>
+        }
+        
+    </div>
+    <div class="bottomarea">        
+
+        @if(showPlanet)
+        {
+            <GameMap OnSelectedLocation="OnSelectedLocation" ></GameMap>
+        }
+        @if(showLocation || showGameMapItem)
+        {
+            <GameMapTileView OnSelectedGameMapItem="OnSelectedGameMapItem" SelectedLocation="SelectedLocation"></GameMapTileView>
+        }
+        @if(showGameMapItem)
+        {
+
+        }
+        @if(showCharacter)
+        {
+            @foreach(CardOfLegend card in Cards)
+            {
+                <div class="card" @onclick=@(() => SelectCard(card))></div>
+            }
+        }
+        @if (showCard)
+        {
+            @foreach (CardOfLegend card in Cards)
+            {
+                <div class="card" @onclick=@(() => SelectCard(card))></div>
+            }
+        }
+    </div>
+</div>
+
+
+
+@code {
+    [CascadingParameter]
+    public int PlayerId { get; set; }
+    // top level selected location of a cascading parameter.
+    public Location SelectedLocation { get; set; }
+
+    [Parameter]
+    public Planet Planet { get; set; }
+    [Parameter]
+    public Character Character { get; set; }
+    [Parameter]
+    public CardOfLegend Card { get; set; }
+    [Parameter]
+    public GameMapItem GameMapItem { get; set; }
+    [Parameter]
+    public List<Resource> Resources { get; set; }
+    [Parameter]
+    public string ImgSrc { get; set; } = "";
+    [Parameter]
+    public List<string> BreadCrumbs { get; set; } = new List<string>();
+    [Parameter]
+    public List<Location> Locations { get; set; } = new List<Location>();
+    [Parameter]
+    public List<Location> PlayerLocations { get; set; } = new List<Location>();
+    [Parameter]
+    public List<Character> Characters { get; set; } = new List<Character>();
+    [Parameter]
+    public List<CardOfLegend> Cards { get; set; } = new List<CardOfLegend>();
+    [Parameter]
+    public List<GameMapItem> GameMapItems { get; set; } = new List<GameMapItem>();
+
+    [Parameter]
+    public int inputXCoordinate { get; set; }
+    [Parameter]
+    public int inputYCoordinate { get; set; }
+
+    private Player? Player { get; set; }
+
+    private bool showPlanet { get; set; } = true;
+    private bool showLocation { get; set; } = false;    
+    private bool showCharacter { get; set; } = false;
+    private bool showCard { get; set; } = false;
+    private bool showGameMapItem { get; set; } = false;
+
+    private bool showBreadCrumb { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        Planet = PlanetService.GetPlanet();
+
+        if (Planet.Name == null)
+        {
+            PlanetService.CreatePlanet();
+            Planet = PlanetService.GetPlanet();
+        }
+
+        ImgSrc = Planet.Image;
+
+        PlayerLocations = UtilityService.GetPlayerLocations(PlayerId);
+    }
+
+    private void OnSelectedLocation(Location location)
+    {
+        SelectedLocation = location;        
+        ImgSrc = location.Img;
+        showPlanet = false;
+        showCharacter = false;
+        showLocation = true;
+        showCard = false;
+        showGameMapItem = false;
+
+        GameMapItems = LocationService.GetGameMapItemsByLocation(SelectedLocation);
+
+        AddBreadCrumb(location.Name);
+    }
+
+    private void OnSelectedGameMapItem(GameMapItem gameMapItem)
+    {
+        GameMapItem = gameMapItem;
+        showGameMapItem = true;
+        showPlanet = false;
+        showCharacter = false;
+        showLocation = false;
+        showCard = false;
+
+
+        AddBreadCrumb($"X = {gameMapItem.X}, Y = {gameMapItem.Y}, Z = {gameMapItem.Z}");
+        CheckForResources();
+    }
+
+    private void CheckForResources()
+    {
+
+        if(GameMapItem != null)
+        {
+            if (LocationService.GetResourcesByTile(GameMapItem).Count == 0)
+            {
+                CreateGameMapResources();
+            }
+            Resources = LocationService.GetResourcesByTile(GameMapItem);
+        }
+
+        
+    }
+
+    private void CreateGameMapResources()
+    {
+        LocationService.CreateResourcesByTile(GameMapItems);
+    }
+
+    private async Task GenerateImage()
+    {
+        await AIService.GetPicture(SelectedLocation);
+    }
+
+
+    private void OnXInputEvent(ChangeEventArgs changeEvent) 
+    { 
+        var xCoordinate = Convert.ToInt32(changeEvent.Value);
+
+        if(xCoordinate > SelectedLocation.CoordinateX2)
+        {
+            inputXCoordinate = SelectedLocation.CoordinateX2;
+        }
+        else if(xCoordinate < SelectedLocation.CoordinateX1)
+        {
+            inputXCoordinate = SelectedLocation.CoordinateX1;
+        }
+        else
+        {
+            inputXCoordinate = xCoordinate;
+        }        
+    }
+    private void OnYInputEvent(ChangeEventArgs changeEvent)
+    {
+        var yCoordinate = Convert.ToInt32(changeEvent.Value);               
+
+        if (yCoordinate > SelectedLocation.CoordinateY2)
+        {
+            inputYCoordinate = SelectedLocation.CoordinateY2;
+        }
+        else if(yCoordinate < SelectedLocation.CoordinateY1)
+        {
+            inputYCoordinate = SelectedLocation.CoordinateY1;
+        }
+        else
+        {
+            inputYCoordinate = yCoordinate;
+        }       
+    }
+
+    private void UpdateYCoordinate()
+    {
+
+    }
+
+    private void SelectBreadCrumb(string breadCrumb)
+    {
+        var location = LocationService.GetLocationByName(breadCrumb);
+
+        if(location != null)
+        {
+            SelectPlanet();
+            OnSelectedLocation(location);
+        }
+
+        //if(Locations.Any(x => x.Name == breadCrumb))
+        //{            
+        //    SelectPlanet();
+        //    OnSelectedLocation(location);
+        //}
+        //if (Characters.Any(x => x.Name == breadCrumb))
+        //{            
+
+        //    SelectPlanet();
+        //    OnSelectedLocation(location);
+        //    var character = Characters.FirstOrDefault(x => x.Name == breadCrumb);
+        //    SelectCharacter(character);
+        //}
+
+    }
+
+    private void RemoveBreadCrumb(string breadCrumb)
+    {
+        BreadCrumbs.Remove(breadCrumb);
+    }
+
+    private void AddBreadCrumb(string breadCrumb)
+    {
+        if (BreadCrumbs.Exists(x => x.StartsWith("X =")))
+        {
+            var lastEntry = BreadCrumbs.LastOrDefault();
+            BreadCrumbs.Remove(lastEntry);
+        }
+        BreadCrumbs.Add(breadCrumb);
+    }
+
+    private void SelectPlanet()
+    {
+        ImgSrc = Planet.Image;
+        showPlanet = true;
+        showLocation = false;
+        showCharacter = false;
+        showCard = false;
+        showGameMapItem = false;
+        BreadCrumbs.Clear();
+        //Locations = UtilityService.GetLocations();
+    }
+
+
+
+    private void SelectCharacter(Character character)
+    {
+        Character = character;
+
+        showLocation = false;
+        showCharacter = true;
+        showCard = false;
+
+        AddBreadCrumb(character.Name);
+    }
+
+    private void SelectGameMapItem(GameMapItem gameMapItem)
+    {
+        GameMapItem = gameMapItem;
+        showGameMapItem = true;
+        showLocation = false;
+        showCharacter = false;
+        showCard = false;
+
+        AddBreadCrumb($"X = {gameMapItem.X}, Y = {gameMapItem.Y}, Z = {gameMapItem.Z}");
+    }
+
+    private void BreadCrumbUpdate(string breadcrumb)
+    {   
+        if (BreadCrumbs.Exists(x => x.StartsWith("X =")))
+        {
+            var lastEntry = BreadCrumbs.LastOrDefault();
+            BreadCrumbs.Remove(lastEntry);
+        }
+        BreadCrumbs.Add(breadcrumb);
+    }
+
+    private void Discover()
+    {
+        Characters = CharacterService.GetCharactersByLocation(SelectedLocation.Id);
+    }
+
+    private void FirstDiscover(int planetId)
+    {
+        var locations = LocationService.GetSurfaceLevelLocationsByPlanetId(planetId);
+        UtilityService.AddPlayerLocations(PlayerId, locations);
+        PlayerLocations = UtilityService.GetPlayerLocations(PlayerId);
+
+    }
+
+    private async Task Interact()
+    {
+        Player = await UtilityService.GetPlayer();
+        Cards = UtilityService.GetPlayerCards(Player.Id);
+    }
+
+    private void SelectCard(CardOfLegend card)
+    {
+        showCard = true;
+        showPlanet = false;
+        showLocation = false;
+        showCharacter = false;
+
+        Card = card;
+
+    }
+
+    private void UseCard()
+    {
+        CardService.PlayCard(Card, Player.Id, Character.Id);
+        Cards.Remove(Card);
+        Card = new CardOfLegend();
+    }
+
+
+    private void CheckForCharacters()
+    {
+
+    }
+}

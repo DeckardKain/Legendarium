@@ -1,0 +1,26 @@
+﻿@if(this.Character != null)
+{
+    <tr>
+        <td>
+            <NavLink href="@($"character/{Character.Id}")">
+                @Character.Name
+            </NavLink>
+        </td>
+        <td>@Character.Strength</td>
+        <td>@Character.Intellect</td>
+        <td>@Character.Stamina</td>
+        <td>@Character.Agility</td>
+        <td>@Character.Discernement</td>
+        <td>@Character.Dexterity</td>
+        <td>@Character.Dialect</td>
+    </tr>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public Character Character { get; set; }
+}
+

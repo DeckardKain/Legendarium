@@ -1,0 +1,51 @@
+﻿@page "/character/{id:int}"
+
+@inject ICharacterRepository viewCharacter
+
+<h3>Character Details</h3>
+
+<div>
+    <img src="@character.ImageLink" class="img-thumbnail rounded-2 float-start mx-lg-0" width="200" height="200" style="margin-right:10px !important;"/>    
+    Name: @character.Name
+    <br />
+    Strength: @character.Strength.ToString()
+    <br />
+    Intellect: @character.Intellect.ToString()
+    <br />
+    Stamina: @character.Stamina.ToString()
+    <br />
+    Agility: @character.Agility.ToString()
+    <br />
+    Discernment: @character.Discernement.ToString()
+    <br />
+    Dexterity: @character.Dexterity.ToString()
+    <br />
+    Dialect: @character.Dialect.ToString()
+</div>
+<br />
+<button type="button" class="btn btn-primary" @onclick="HandleInfluence">Influence</button>
+
+<NavLink href="characters">Back to Characters</NavLink>
+
+@code {
+    public Character character;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override void OnParametersSet() // This is invoked when the parameter is changed.
+    {
+        base.OnParametersSet();
+
+        if (character == null)
+        {
+            character = viewCharacter.GetCharacter(Id);
+        }
+    }
+
+    private void HandleInfluence()
+    {
+
+    }
+
+}

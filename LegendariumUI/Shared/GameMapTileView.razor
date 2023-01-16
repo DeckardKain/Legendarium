@@ -1,0 +1,327 @@
+﻿@inject ILocationService LocationService
+@inject IJSRuntime js
+
+<div class="grid-container">
+    <div class="top-nav-arrow"><span class="oi oi-arrow-top" @onclick=OnTopArrow></span></div>
+    <div class="left-nav-arrow"><span class="oi oi-arrow-left" @onclick=OnLeftArrow></span></div>
+    <div class="right-nav-arrow"><span class="oi oi-arrow-right" @onclick=OnRightArrow></span></div>
+    <div class="bottom-nav-arrow"><span class="oi oi-arrow-bottom" @onclick=OnBottomArrow></span></div>
+
+    @if(VisibleMapItems.Count > 0)
+    {
+        @for (int i = 1; i <= 25; i++)
+        {           
+            var tile = VisibleMapItems.Where(x => x.MapTile == i).FirstOrDefault();
+            
+            if (tile == null)
+            {   
+                
+                <div class="grid-container--item hexagon  @i emptymapitem">
+         @* @onmouseover="OnMouseOver" style="@MouseOverStyle">
+        *@
+                 </div>
+            }
+            else
+            {               
+                <div class="grid-container--item hexagon @i" @onclick=@(() => OnSelectGameMapItem(tile))>@tile.X - @tile.Y</div>                
+            }
+        }
+    }    
+</div>
+
+@code {
+    [Parameter]
+    public Location SelectedLocation { get; set; }
+
+    string MouseOverStyle;    
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ShowGameMapItem(0,0);       
+    }
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+
+    }
+
+    public async void OnMouseOver()
+    {
+        var x = Convert.ToInt32(await js.InvokeAsync<string>("getMouseXLocation"));
+        var y = Convert.ToInt32(await js.InvokeAsync<string>("getMouseYLocation"));
+
+        MouseOverStyle = ":root { --mouse-x: " + x + "; --mouse-y: " + y + "}";
+
+
+    }
+
+    // GameMap
+    [Parameter]
+    public EventCallback<GameMapItem> OnSelectedGameMapItem { get; set; }
+    [Parameter]
+    public List<GameMapItem> GameMapItems { get; set; } = new List<GameMapItem>();
+    [Parameter]
+    public List<GameMapItem> VisibleMapItems { get; set; } = new List<GameMapItem>();
+    [Parameter]
+    public bool ShowGameMap { get; set; } = false;
+
+    // GameMap Navigator Tracker
+    private int YArrowClick { get; set; }
+    private int XArrowClick { get; set; }
+
+    private void OnSelectGameMapItem(GameMapItem gameMapItem)
+    {
+        OnSelectedGameMapItem.InvokeAsync(gameMapItem);  // should these invokes be async?
+
+    }
+
+    private void ShowGameMapItem(int xAdjustment,int yAdjustment)
+    {
+        var xStart = SelectedLocation.CoordinateX1 + xAdjustment;
+        var yStart = SelectedLocation.CoordinateY1 + yAdjustment;
+        var xEnd = 0;
+        var yEnd = 0;
+
+        if(SelectedLocation.CoordinateX2 - xStart < 5)
+        {
+            xEnd = SelectedLocation.CoordinateX2;
+        }
+        if (SelectedLocation.CoordinateY2 - yStart < 5)
+        {
+            yEnd = SelectedLocation.CoordinateY2;
+        }
+        if (SelectedLocation.CoordinateX2 - xStart >= 5)
+        {
+            xEnd = xStart + 5;            
+        }
+        if (SelectedLocation.CoordinateY2 - yStart >= 5)
+        {
+            yEnd = yStart + 5;
+        }        
+
+        if(xStart <= 0)
+        {
+            xStart = 1;
+        }
+        if(yStart <= 0)
+        {
+            yStart = 1;
+        }
+
+        VisibleMapItems = LocationService.GetGameMapItemByCoordinateRange(xStart, xEnd, yStart, yEnd, 1);
+        if(VisibleMapItems.Count > 0)
+        {
+            MapPlacementHelper(xStart, xEnd, yStart, yEnd);
+        }
+        
+    }
+
+
+
+    private void OnTopArrow()
+    {
+        YArrowClick += 1;
+        ShowGameMapItem(0,YArrowClick);
+    }
+    private void OnBottomArrow()
+    {
+        YArrowClick -= 1;
+        ShowGameMapItem(0, YArrowClick);
+    }
+    private void OnLeftArrow()
+    {
+        XArrowClick -= 1;
+        ShowGameMapItem(XArrowClick,0);
+    }
+    private void OnRightArrow()
+    {
+        XArrowClick += 1;
+        ShowGameMapItem(XArrowClick, 0);
+    }
+
+    private void MapPlacementHelper(int xStart, int xEnd, int yStart, int yEnd)
+    {
+        //var minX = VisibleMapItems.Min(x => x.X);
+        //var minY = VisibleMapItems.Min(y => y.Y);
+
+        foreach(GameMapItem gameMapItem in VisibleMapItems)
+        {
+            // Row 1
+            if (gameMapItem.X == xStart && gameMapItem.Y == yStart)
+            {
+                gameMapItem.MapTile = 21; // Game map tile 1 has to go to tile 21 because of the way the elements are displayed on the screen.
+            }
+            if (gameMapItem.X == xStart + 1 && gameMapItem.Y == yStart)
+            {
+                gameMapItem.MapTile = 22;
+            }
+            if (gameMapItem.X == xStart + 2 && gameMapItem.Y == yStart)
+            {
+                gameMapItem.MapTile = 23;
+            }
+            if (gameMapItem.X == xStart + 3 && gameMapItem.Y == yStart)
+            {
+                gameMapItem.MapTile = 24;
+            }
+            if (gameMapItem.X == xStart + 5 && gameMapItem.Y == yStart)
+            {
+                gameMapItem.MapTile = 25;
+            }
+
+            // Row 2
+            if (gameMapItem.X == xStart && gameMapItem.Y == yStart + 1)
+            {
+                gameMapItem.MapTile = 16;
+            }
+            if (gameMapItem.X == xStart + 1 && gameMapItem.Y == yStart + 1)
+            {
+                gameMapItem.MapTile = 17;
+            }
+            if (gameMapItem.X == xStart + 2 && gameMapItem.Y == yStart + 1)
+            {
+                gameMapItem.MapTile = 18;
+            }
+            if (gameMapItem.X == xStart + 3 && gameMapItem.Y == yStart + 1)
+            {
+                gameMapItem.MapTile = 19;
+            }
+            if (gameMapItem.X == xStart + 5 && gameMapItem.Y == yStart + 1)
+            {
+                gameMapItem.MapTile = 20;
+            }
+
+            // Row 3
+            if (gameMapItem.X == xStart && gameMapItem.Y == yStart + 2)
+            {
+                gameMapItem.MapTile = 11;
+            }
+            if (gameMapItem.X == xStart + 1 && gameMapItem.Y == yStart + 2)
+            {
+                gameMapItem.MapTile = 12;
+            }
+            if (gameMapItem.X == xStart + 2 && gameMapItem.Y == yStart + 2)
+            {
+                gameMapItem.MapTile = 13;
+            }
+            if (gameMapItem.X == xStart + 3 && gameMapItem.Y == yStart + 2)
+            {
+                gameMapItem.MapTile = 14;
+            }
+            if (gameMapItem.X == xStart + 5 && gameMapItem.Y == yStart + 2)
+            {
+                gameMapItem.MapTile = 15;
+            }
+
+            // Row 4
+            if (gameMapItem.X == xStart && gameMapItem.Y == yStart + 3)
+            {
+                gameMapItem.MapTile = 6;
+            }
+            if (gameMapItem.X == xStart + 1 && gameMapItem.Y == yStart + 3)
+            {
+                gameMapItem.MapTile = 7;
+            }
+            if (gameMapItem.X == xStart + 2 && gameMapItem.Y == yStart + 3)
+            {
+                gameMapItem.MapTile = 8;
+            }
+            if (gameMapItem.X == xStart + 3 && gameMapItem.Y == yStart + 3)
+            {
+                gameMapItem.MapTile = 9;
+            }
+            if (gameMapItem.X == xStart + 5 && gameMapItem.Y == yStart + 3)
+            {
+                gameMapItem.MapTile = 10;
+            }
+
+            // Row 4
+            if (gameMapItem.X == xStart && gameMapItem.Y == yStart + 4)
+            {
+                gameMapItem.MapTile = 1;
+            }
+            if (gameMapItem.X == xStart + 1 && gameMapItem.Y == yStart + 4)
+            {
+                gameMapItem.MapTile = 2;
+            }
+            if (gameMapItem.X == xStart + 2 && gameMapItem.Y == yStart + 4)
+            {
+                gameMapItem.MapTile = 3;
+            }
+            if (gameMapItem.X == xStart + 3 && gameMapItem.Y == yStart + 4)
+            {
+                gameMapItem.MapTile = 4;
+            }
+            if (gameMapItem.X == xStart + 5 && gameMapItem.Y == yStart + 4)
+            {
+                gameMapItem.MapTile = 5;
+            }
+                
+        }
+
+
+
+        //// Need to determine the layout ie. how many rows and columns.
+        
+        //// 5 columns
+        //if (xStart - xEnd >= 5)
+        //{
+
+        //}
+        //// 5 rows
+        //if (yStart - yEnd >= 5)
+        //{
+
+        //}
+
+        //if(xEnd - xStart < 5)
+        //{
+        //    // Only 4 columns
+        //    if(xEnd - xStart == 4)
+        //    {
+
+        //    }
+        //    // Only 3 columns
+        //    if (xEnd - xStart == 3)
+        //    {
+
+        //    }
+        //    // Only 2 columns
+        //    if (xEnd - xStart == 2)
+        //    {
+
+        //    }
+        //    // Only 1 column
+        //    if (xEnd - xStart == 1)
+        //    {
+
+        //    }
+        //}
+
+        //if (yEnd - yStart < 5)
+        //{
+        //    // Only 4 columns
+        //    if (yEnd - yStart == 4)
+        //    {
+
+        //    }
+        //    // Only 3 columns
+        //    if (yEnd - yStart == 3)
+        //    {
+
+        //    }
+        //    // Only 2 columns
+        //    if (yEnd - yStart == 2)
+        //    {
+
+        //    }
+        //    // Only 1 column
+        //    if (yEnd - yStart == 1)
+        //    {
+
+        //    }
+        //}
+
+
+    }
+}

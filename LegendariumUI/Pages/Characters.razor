@@ -1,0 +1,64 @@
+﻿@inject ICharacterRepository characterRespository;
+
+<h3>Characters</h3>
+<br />
+<button class="btn btn-primary" onclick=@CreateCharacters>Create Characters</button>
+<SearchBar OnSearch="HandleSearch">
+
+</SearchBar>
+
+<table class="table table-striped table-hover">
+    <thead>    
+        <tr>
+            <th>Name</th>
+            <th>Strength</th>
+            <th>Intellect</th>
+            <th>Stamina</th>
+            <th>Agility</th>
+            <th>Discernment</th>
+            <th>Dexterity</th>
+            <th>Dialect</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(characters != null && characters.Count() > 0)
+        {
+            @foreach (var character in characters)
+            {
+                <CharacterTViewComponent Character="character"></CharacterTViewComponent>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">No Characters Found.</td>
+            </tr>
+        }
+
+
+        
+    </tbody>
+</table>
+@code {
+
+    public IEnumerable<Character>? characters { get; set; }
+
+    private void CreateCharacters()
+    {
+        characterRespository.CreateCharacters();
+        characters = characterRespository.GetAllCharacters();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        characters = characterRespository.GetAllCharacters();
+      
+    }
+
+    private void HandleSearch(string filter)
+    {
+        characters = characterRespository.GetCharacters(filter);
+    }
+
+}

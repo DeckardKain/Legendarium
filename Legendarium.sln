@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendariumLife", "Legendarium.Life\LegendariumLife.csproj", "{CCB22465-1869-4EB9-8545-C3AD235E28AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendariumWorld", "Legendarium.World\LegendariumWorld.csproj", "{E40893E7-5A1E-4667-906C-BF17900B0F44}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendariumRandom", "Legendarium.Random\LegendariumRandom.csproj", "{192D2673-1800-4F74-8E8F-4EE81CD7B28C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendariumLoot", "LegendariumLoot\LegendariumLoot.csproj", "{729E0FC2-730A-456C-8A53-16398EA2EB31}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendariumAdventure", "LegendariumAdventure\LegendariumAdventure.csproj", "{FC192F9B-D5DC-4D47-91DC-E68C186CDEA1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendariumUI", "LegendariumUI\LegendariumUI.csproj", "{1017A0C3-7324-414C-89F5-8D3E7667A9A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendariumData", "LegendariumData\LegendariumData.csproj", "{2F37244F-C252-4A05-97F8-B55DCF9C8619}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CCB22465-1869-4EB9-8545-C3AD235E28AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCB22465-1869-4EB9-8545-C3AD235E28AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCB22465-1869-4EB9-8545-C3AD235E28AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCB22465-1869-4EB9-8545-C3AD235E28AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E40893E7-5A1E-4667-906C-BF17900B0F44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E40893E7-5A1E-4667-906C-BF17900B0F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E40893E7-5A1E-4667-906C-BF17900B0F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E40893E7-5A1E-4667-906C-BF17900B0F44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{192D2673-1800-4F74-8E8F-4EE81CD7B28C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{192D2673-1800-4F74-8E8F-4EE81CD7B28C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{192D2673-1800-4F74-8E8F-4EE81CD7B28C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{192D2673-1800-4F74-8E8F-4EE81CD7B28C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{729E0FC2-730A-456C-8A53-16398EA2EB31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{729E0FC2-730A-456C-8A53-16398EA2EB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{729E0FC2-730A-456C-8A53-16398EA2EB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{729E0FC2-730A-456C-8A53-16398EA2EB31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC192F9B-D5DC-4D47-91DC-E68C186CDEA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC192F9B-D5DC-4D47-91DC-E68C186CDEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC192F9B-D5DC-4D47-91DC-E68C186CDEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC192F9B-D5DC-4D47-91DC-E68C186CDEA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1017A0C3-7324-414C-89F5-8D3E7667A9A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1017A0C3-7324-414C-89F5-8D3E7667A9A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1017A0C3-7324-414C-89F5-8D3E7667A9A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1017A0C3-7324-414C-89F5-8D3E7667A9A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F37244F-C252-4A05-97F8-B55DCF9C8619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F37244F-C252-4A05-97F8-B55DCF9C8619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F37244F-C252-4A05-97F8-B55DCF9C8619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F37244F-C252-4A05-97F8-B55DCF9C8619}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EEE8468B-3141-4820-9F66-0C3B7868B9BE}
+	EndGlobalSection
+EndGlobal

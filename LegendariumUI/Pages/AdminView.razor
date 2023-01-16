@@ -1,0 +1,143 @@
+﻿@page "/adminportal"
+
+@inject IPlanetService PlanetService
+@inject ILocationService LocationService
+@inject ICharacterService CharacterService
+@inject IAIService AIService
+
+<h3>Create New Planet</h3>
+
+<Button class="btn btn-primary" @onclick="CreatePlanet">New Planet</Button>
+<Button class="btn btn-primary" @onclick="GetPlanet">Get Planet</Button>
+<h3>Current Planet Details</h3>
+
+<p>Name: @Planet.Name</p>
+<p>Size: @Planet.Size</p>
+
+<h3>Create New Locations</h3>
+
+<Button class="btn btn-primary" @onclick="CreateLocations">Create Locations</Button>
+
+<h3>View Locations</h3>
+<br />
+<Button class="btn btn-primary" @onclick="GetLocations">Get Locations</Button>
+<Button class="btn btn-primary" @onclick="ClearLocations">Clear Locations</Button>
+<Button class="btn btn-primary" @onclick="DeleteLocations">Delete Locations</Button>
+<Button class="btn btn-primary" @onclick="CreateImage">Create Image</Button>
+<p>Locations created: @Locations.Count</p>
+@foreach(Location location in Locations)
+{
+    <div class="location" @onclick=@(() => SelectLocation(location))>
+        <p>Name: @location.Name </p>
+        <p>Biome: @location.Biome </p>
+        <p>Size: @location.Size</p>
+        <img src="@location.Img" />
+    </div>
+}
+
+<h3>Sub Locations</h3>
+<br />
+<p>Selected Location: @SelectedLocation?.Name</p>
+<Button class="btn btn-primary" @onclick="CreateSubLocations">New SubLocations</Button>
+<Button class="btn btn-primary" @onclick="GetSubLocations">Get SubLocations</Button>
+@foreach (Location location in SubLocations)
+{
+    <div class="location">
+        <p>Name: @location.Name </p>
+        <p>Biome: @location.Biome </p>
+        <p>Size: @location.Size</p>
+        <p>XRange: @location.CoordinateX1 - @location.CoordinateX2</p>
+        <p>YRange: @location.CoordinateY1 - @location.CoordinateY2</p>
+    </div>
+}
+
+<p>Create GameMapItems</p>
+<Button class="btn btn-primary" @onclick="CreateGameMapItems">Create GameMapItems</Button>()
+
+@code {
+    [Parameter]
+    public List<Location> Locations { get; set; } = new List<Location>();
+    [Parameter]
+    public Location? SelectedLocation { get; set; }
+    [Parameter]
+    public List<Location> SubLocations { get; set; } = new List<Location>();
+
+    private Planet Planet { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if(Planet == null)
+        {
+            Planet = PlanetService.GetPlanet();
+        }
+    }
+
+    public void CreatePlanet()
+    {
+        PlanetService.CreatePlanet();
+        Planet = PlanetService.GetPlanet();
+    }
+
+    public void CreateLocations()
+    {
+        if(Planet == null)
+        {
+            Planet = PlanetService.GetPlanet();
+        }
+        LocationService.CreateLocations(Planet);
+        GetLocations();
+    }
+
+    public void DeleteLocations()
+    {
+        LocationService.DeleteLocations();
+    }
+
+    public void CreateSubLocations()
+    {
+        if(SelectedLocation != null)
+        {            
+            LocationService.CreateSettlementRandomStart(SelectedLocation);
+        }
+    }
+
+    public void GetSubLocations()
+    {
+        SubLocations = LocationService.GetAllSubLocations();
+    }
+
+    public void CreateGameMapItems()
+    {
+        LocationService.CreateGameMapItems(SelectedLocation);
+    }
+
+
+
+    private void GetLocations()
+    {
+        if (Planet.Id >= 1)
+        {
+            Locations = LocationService.GetSurfaceLevelLocationsByPlanetId(Planet.Id);
+        }
+    }
+
+    private void SelectLocation(Location location)
+    {        
+        SelectedLocation = location;
+    }
+
+    private void ClearLocations()
+    {
+        Locations.Clear();
+    }
+
+    private void GetPlanet()
+    {
+        Planet = PlanetService.GetPlanet();
+    }
+    private async Task CreateImage()
+    {
+        await AIService.GetPicture(SelectedLocation);
+    }
+}

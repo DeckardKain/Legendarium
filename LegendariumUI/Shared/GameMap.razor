@@ -1,0 +1,82 @@
+﻿@inject ILocationService LocationService
+
+
+<div class="grid-container">
+    <div class="grid-item left-nav-arrow">L</div>
+    <div class="grid-item right-nav-arrow">R</div>
+    <div class="grid-item top-nav-arrow">UP</div>
+    <div class="grid-item bottom-nav-arrow">DOWN</div>
+    <div class="grid-item nested-grid">
+        @if(ShowLocation)
+        {
+            @foreach (Location location in Locations)
+            {
+                <div class="nested-grid-item grid-item-1 location" @onclick=@(() => SelectLocation(location))
+             style="background-image:url('@location.Img');background-size:cover;"></div>
+            }
+        }
+        @if (ShowGameMap)
+        {
+            @foreach (GameMapItem gameMapItem in VisibleMapItems)
+            {
+                <div class="nested-grid-item grid-item-1 gamemapitem" @onclick=@(() => SelectGameMapItem(gameMapItem))></div>
+            }
+        }        
+
+    </div>
+</div>
+@code {
+    [CascadingParameter]
+    public Location SelectedLocation { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Locations = LocationService.GetLocations();
+    }
+
+
+    // Location
+    [Parameter]
+    public EventCallback<Location> OnSelectedLocation { get; set; }
+    [Parameter]
+    public List<Location> Locations { get; set; } = new List<Location>();
+    [Parameter]
+    public bool ShowLocation { get; set; } = true;
+
+    private void SelectLocation(Location location)
+    {
+        OnSelectedLocation.InvokeAsync(location);
+        //SelectedLocation = location;
+        //GameMapItems = LocationService.GetGameMapItemsByLocation(location);
+    }
+
+    // GameMap
+    [Parameter]
+    public EventCallback<GameMapItem> SelectedGameMapItem { get; set; }
+    [Parameter]
+    public List<GameMapItem> GameMapItems { get; set; } = new List<GameMapItem>();
+    [Parameter]
+    public List<GameMapItem> VisibleMapItems { get; set; } = new List<GameMapItem>();
+    [Parameter]
+    public bool ShowGameMap { get; set; } = false;
+
+
+    private void ShowGameMapItem()
+    {
+        for(int i = 0; i < 25; i++)
+        {
+            var mapItem = GameMapItems[i];
+            VisibleMapItems.Add(mapItem);
+        }
+        ShowLocation = false;
+        ShowGameMap = true;
+    }
+
+    private void SelectGameMapItem(GameMapItem gameMapItem)
+    {
+        SelectedGameMapItem.InvokeAsync(gameMapItem);  // should these invokes be async?
+    }
+
+
+}

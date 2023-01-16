@@ -1,0 +1,21 @@
+﻿@inject ICardService CardService
+@inject IUtilityService UtilityService
+
+<h3>Cards</h3>
+
+@code {
+    [Parameter]
+    public List<CardOfLegend> AllCards { get; set; } = new List<CardOfLegend>();
+    [Parameter]
+    public CardOfLegend SelectedCard { get; set; }
+    [Parameter]
+    public List<CardOfLegend> PlayerCards { get; set; } = new List<CardOfLegend>();
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        //AllCards = CardService.GetAllCards();
+
+    }
+}

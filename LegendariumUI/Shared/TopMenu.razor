@@ -1,0 +1,51 @@
+﻿@implements IDisposable
+@inject IPowerService PowerService
+@inject IVisionService VisionService
+
+<AuthorizeView>
+    <Authorized>
+    <div class="top-menu">
+        <p>Power @PowerService.Power</p>
+        <p>Vision @VisionService.Vision</p>        
+        <span class="popover-header"></span>    
+    </div>
+    </Authorized>
+    <NotAuthorized>
+        Testing!
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+
+    //protected override void OnInitialized()
+    //{        
+    //    PowerService.OnChange += StateHasChanged;
+    //}
+
+    protected override void OnInitialized()
+    {
+        PowerService.OnChange += StateHasChanged;
+        VisionService.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await PowerService.GetPower();
+        await VisionService.GetVision();
+    }
+
+
+
+    //public void UpdatePower()
+    //{
+    //    PowerService.PowerValueChange();
+    //}
+
+    public void Dispose()
+    {
+        PowerService.OnChange -= StateHasChanged;
+    }
+
+}

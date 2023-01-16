@@ -1,0 +1,62 @@
+﻿<div class="legendgamemenu">
+    <button class="gamemenu-item" @onclick=DisplayOverviewView>
+        Overview
+    </button>
+    <button class="gamemenu-item" @onclick=DisplayWorldView>
+        World
+    </button>
+    <button class="gamemenu-item" @onclick=DisplayDominionView>
+        Dominion
+    </button>
+    <button class="gamemenu-item" @onclick=DisplayAdventureView>
+        Adventure
+    </button>
+    <button class="gamemenu-item" @onclick=DisplayCardView>
+        Card
+    </button>
+    <button class="gamemenu-item" @onclick=DisplayResearchView>
+        Research
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> ShowOverview { get; set; }
+    [Parameter]
+    public EventCallback<bool> ShowWorld { get; set; }
+    [Parameter]
+    public EventCallback<bool> ShowDominion { get; set; }
+    [Parameter]
+    public EventCallback<bool> ShowAdventure { get; set; }
+    [Parameter]
+    public EventCallback<bool> ShowCard { get; set; }
+    [Parameter]
+    public EventCallback<bool> ShowResearch { get; set; }
+
+
+    private void DisplayOverviewView()
+    {
+        ShowOverview.InvokeAsync(true);      
+    }
+    private void DisplayWorldView()
+    {
+        ShowWorld.InvokeAsync(true);
+    }
+    private void DisplayDominionView()
+    {
+        ShowDominion.InvokeAsync(true);
+    }
+    private void DisplayAdventureView()
+    {
+        ShowAdventure.InvokeAsync(true);
+    }
+    private void DisplayCardView()
+    {
+        ShowCard.InvokeAsync(true);
+    }
+    private void DisplayResearchView()
+    {
+        ShowResearch.InvokeAsync(true);
+    }
+
+}

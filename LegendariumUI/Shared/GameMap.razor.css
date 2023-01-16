@@ -1,0 +1,75 @@
+﻿*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+.grid-container {
+    display: grid;
+    background-color: #2196F3;
+    padding: 10px;
+    grid-template-columns: 50px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 50px;
+    grid-template-rows: 50px 1fr 1fr 1fr 1fr 1fr 1fr 10px;
+}
+
+.grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.left-nav-arrow {
+    grid-row-start: 2;
+    grid-row-end: span 7;
+    grid-column-start: 1;
+    border: none;
+}
+
+.top-nav-arrow {
+    grid-column-start: 1;
+    grid-column: span 10;
+    grid-row-start: 1;
+    border: none;
+}
+
+.right-nav-arrow {
+    grid-row-start: 2;
+    grid-column-start: 10;
+    grid-row-end: span 7;
+    border: none;
+}
+
+.bottom-nav-arrow {
+    grid-column-start: 1;
+    grid-row-start: 10;
+    grid-column-end: 11;
+    border: none;
+}
+
+.nested-grid {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+    grid-row: 2 / 9;
+    grid-column: 2 / 10;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+}
+
+.nested-grid-item {
+    /*background-color: rgba(25, 255, 255, 0.8);*/
+   
+    background-size: cover;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+/* Begin Styling Of The Elements*/
+
+.location {
+   
+}

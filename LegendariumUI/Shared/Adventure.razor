@@ -1,0 +1,180 @@
+﻿@using LegendariumWorld
+@inject IAdventureService AdventureService
+@inject IUtilityService UtilityService
+@inject ICharacterService CharacterService
+@inject ILocationService LocationService
+
+<h3>Adventure</h3>
+
+<h4>Select Adventure Type</h4>
+
+
+<p @onclick="SelectExplore">Explore</p>
+<p>Inspire your followers to explore their surroundings to make new fantastic discoveries. These discoveries will help you build your empire.</p>
+<p @onclick="SelectQuest">Quest</p>
+<p>Lay down the challenge for your character to go forth into the world and complete the heroic task you have assigned.</p>
+
+<h4>Select Starting Location</h4>
+
+@foreach (Location location in Locations)
+{
+    <div class="location" @onclick=@(() => SelectStartLocation(location))>
+        @location.Name
+        @location.Biome
+    </div>
+}
+
+
+<h4>Select Characters</h4>
+<p>Character List</p>
+@foreach (Character character in AvailableCharacters)
+{
+    <div class="character" @onclick=@(() => SelectCharacter(character))>
+        @character.Name
+        @character.Type
+    </div>
+}
+<p>The Player will then select all the character they want to go on this mission.</p>
+
+<h4>Select Destination</h4>
+<p>Known locations the player can select from</p>
+@foreach (Location location in Locations)
+{
+    <div class="location" @onclick=@(() => SelectDestinationLocation(location))>
+        @location.Name
+        @location.Biome
+    </div>
+}
+
+<h4>Select Supplies</h4>
+<p></p>
+
+<h4>Review of Adventure</h4>
+<h5>Adventure Type</h5>
+@if(Explore)
+{
+    <p>You have chosen to Explore!</p>
+}
+@if(Quest)
+{
+    <p>You have chosen to Quest!</p>
+}
+<p>Start Location</p>
+@if(StartLocation != null)
+{
+    @StartLocation.Name
+}
+
+<p>List of Selected Characters</p>
+@foreach (Character character in SelectedCharacters)
+{
+    <div class="character">
+        @character.Name
+        @character.Type
+    </div>
+}
+<p>Destination</p>
+@if(EndLocation != null)
+{
+    @EndLocation.Name
+}
+
+<p>Supplies</p>
+<p>Player can now select behaviour of characters. Hostile or Peaceful</p>
+<p>Attack, Pillage, Take, Steal, Shoot First Ask Questions Never.</p>
+<p @onclick="SelectHostile">Hostile</p>
+<p>You go in peace and only fight in defense.</p>
+<p @onclick="SelectPeaceful">Peaceful</p>
+
+<button class="btn btn-primary" @onclick="LaunchAdventure">Launch Adventure</button>
+
+<br />
+<span></span>
+<h3>Active Adventures</h3>
+
+<p>Should create a new element here with a progress bar that shows the character on their journey, where they are currently at, speed they are traveling, if engaged in an event, etc.</p>
+
+
+@code {
+    [CascadingParameter(Name = "PlayerInfo")]
+    public int PlayerId { get; set; }
+
+    [Parameter]
+    public Location StartLocation { get; set; }
+    [Parameter]
+    public Location EndLocation { get; set; }
+    [Parameter]
+    public List<Location> Locations { get; set; }
+    [Parameter]
+    public Character SelectedCharacter { get; set; }
+    [Parameter]
+    public List<Character> Characters { get; set; } = new List<Character>();
+    [Parameter]
+    public List<Character> SelectedCharacters { get; set; } = new List<Character>();
+    [Parameter]
+    public List<Character> AvailableCharacters { get; set; } = new List<Character>();
+    [Parameter]
+    public Supply Supplies { get; set; }
+    private bool Quest { get; set; }
+    private bool Explore { get; set; }
+    private bool Hostile { get; set; }
+    private bool Peaceful { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Characters = CharacterService.GetCharactersControlledByPlayer(PlayerId);
+        Locations = UtilityService.GetPlayerLocations(PlayerId);
+    }
+
+    private void LaunchAdventure()
+    {
+        //AdventureService.CreateNewAdventure(PlayerId, SelectedCharacters, StartLocation, EndLocation,)
+    }
+
+    private void SelectCharacter(Character character)
+    {
+        SelectedCharacter = character;
+        SelectedCharacters.Add(character);
+    }
+
+    private void SelectStartLocation(Location location)
+    {
+        StartLocation = location;
+        GetAvailableCharacters();
+    }
+
+    private void SelectDestinationLocation(Location location)
+    {
+        EndLocation = location;        
+    }
+
+    private void GetAvailableCharacters()
+    {
+        AvailableCharacters = Characters.Where(x => x.LocationId == StartLocation.Id).ToList();
+    }
+
+    private void SelectExplore()
+    {
+        Explore = true;
+        Quest = false;
+    }
+
+    private void SelectQuest()
+    {
+        Explore = false;
+        Quest = true;
+    }
+
+    private void SelectHostile()
+    {
+        Hostile = true;
+        Peaceful = false;
+    }
+
+    private void SelectPeaceful()
+    {
+        Hostile = false;
+        Peaceful = true;
+    }
+}
