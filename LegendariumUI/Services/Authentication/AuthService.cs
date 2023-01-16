@@ -6,6 +6,7 @@ using LegendariumWorld;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
+using static OpenAI.GPT3.ObjectModels.SharedModels.IOpenAiModels;
 
 namespace LegendariumUI.Services.Authentication
 {
@@ -34,6 +35,27 @@ namespace LegendariumUI.Services.Authentication
 
             }
 
+            return response;
+        }
+
+        public async Task<ServiceResponse<string>> Logout()
+        {
+            var response = new ServiceResponse<string>();
+
+            try
+            {
+                await _storageService.RemoveItemsAsync(new List<string> { "exp", "usrnm", "usrid", "authToken" });
+                await _authenticationState.GetAuthenticationStateAsync();
+            }
+            catch
+            {
+                response.Success = false;
+                response.Message = "Error: Logout Failed.";
+                return response;
+            }
+
+            response.Success = true;
+            response.Message = "Success: Logout Complete.";
             return response;
         }
 

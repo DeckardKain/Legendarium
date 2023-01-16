@@ -172,10 +172,6 @@ namespace LegendariumUI.Repositories.Authentication
         private string CreateToken(Player player)
         {
             byte[] key = Convert.FromBase64String(_configuration["AppSettings:Token"]);
-            //byte[] key = Convert.FromBase64String(Secret);
-
-            //var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AppSettings:Token"]));
-            //var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
 
             var securityKey = new SymmetricSecurityKey(key);
             SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
@@ -194,68 +190,6 @@ namespace LegendariumUI.Repositories.Authentication
 
             JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
             return handler.WriteToken(token);
-
-            //var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
-
-            //var claims = new[]
-            //{
-            //    new Claim(ClaimTypes.NameIdentifier, player.Id.ToString()),
-            //    new Claim(ClaimTypes.Name, player.UserName),
-            //    new Claim(ClaimTypes.Role, "Player"),
-            //    new Claim(JwtRegisteredClaimNames.Sub, player.Email),
-            //};
-
-            //var token = new JwtSecurityToken(_configuration["AppSettings:Issuer"],
-            //   _configuration["AppSettings:Audience"],
-            //   claims,
-            //   expires: DateTime.Now.AddDays(1),
-            //   signingCredentials: credentials
-            //   );
-
-            //var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(_configuration["AppSettings:Issuer"],
-            //   _configuration["AppSettings:Audience"],
-            //   claims,
-            //   expires: DateTime.Now.AddDays(1),
-            //   signingCredentials: credentials
-            //   );
-
-
-            
-
-            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            //    _configuration.GetSection("AppSettings:Token").Value));
-
-
-            //var tokenKey = _configuration["AppSettings:Token"];
-            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
-
-
-            //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            //var token = new JwtSecurityToken()
-            //{
-            //    issuer:"Legendarium",
-            //    audience: "Player",
-            //    claims: claims,
-            //    expires: DateTime.Now.AddDays(1),
-            //    signingCredentials: creds)
-            //};
-
-            //var token = new JwtSecurityToken(
-            //    claims: newClaims,
-            //    expires: DateTime.Now.AddDays(1),
-            //    signingCredentials: creds,
-            //    issuer:"Legendarium",
-            //    audience: "Players"
-            //);
-
-            //token = handler.ReadJwtToken(idToken.Replace("\0",""));
-
-            //var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            //var updatedJWT = new JwtSecurityTokenHandler().ReadJwtToken(jwt.Replace("\"", ""));
-            //var jwt2 = new JwtSecurityTokenHandler().WriteToken(updatedJWT);
-
-            //return jwt;
         }
 
     }

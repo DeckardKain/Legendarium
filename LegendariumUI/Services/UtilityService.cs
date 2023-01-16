@@ -28,10 +28,11 @@ namespace LegendariumUI.Services
 
             try
             {
-                //userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var authToken = await _storageService.GetItemAsStringAsync("authToken");
                 var identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
-                userId = int.Parse(identity.Claims.First<Claim>().Value);               
+                //userId = int.Parse(identity.Claims.First<Claim>().Value);
+                //userId = await _storageService.GetItemAsync<int>("usrid");
 
             }
             catch(Exception)
