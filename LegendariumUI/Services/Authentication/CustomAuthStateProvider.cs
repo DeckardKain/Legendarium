@@ -28,9 +28,9 @@ namespace LegendariumUI.Services.Authentication
         {
             var userId = await _storageService.GetItemAsStringAsync("usrid");
             var username = await _storageService.GetItemAsStringAsync("usrnm");
-            //var authToken = await _storageService.GetItemAsync("authToken");
+            var authToken = await _storageService.GetItemAsStringAsync("authToken");
 
-           
+
             var identity = new ClaimsIdentity();
             var user = new ClaimsPrincipal(identity);
             
@@ -60,7 +60,7 @@ namespace LegendariumUI.Services.Authentication
                 new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(ClaimTypes.Name, username),
             };
-            identity = new ClaimsIdentity(claims);
+            identity = new ClaimsIdentity(claims, "jwt");
 
             ////identity = new ClaimsIdentity(await GetClaimsAsync(authToken), "jwt");            
 
@@ -82,7 +82,7 @@ namespace LegendariumUI.Services.Authentication
                 new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(ClaimTypes.Name, username),
             };
-            var identity = new ClaimsIdentity(claims);
+            var identity = new ClaimsIdentity(claims, "jwt");
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);
             NotifyAuthenticationStateChanged(Task.FromResult(state));

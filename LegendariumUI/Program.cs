@@ -4,6 +4,7 @@ using LegendariumData;
 using LegendariumUI.Repositories.Authentication;
 using LegendariumUI.Services;
 using LegendariumUI.Services.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -57,24 +58,28 @@ builder.Services.AddScoped<IAIService, AIService>();
 builder.Services.AddBootstrapBlazor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromDays(20);
+});
 
-
-//builder.Services.AddAuthenticationCore();
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//    .AddJwtBearer(options =>
-//    {
-//        //options.TokenValidationParameters = new TokenValidationParameters
-//        //{
-//        //    ValidateIssuer = true,
-//        //    ValidateAudience = true,
-//        //    ValidateLifetime = true,
-//        //    ValidateIssuerSigningKey = true,
-//        //    ValidIssuer = builder.Configuration["AppSettings:Issuer"],
-//        //    ValidAudience = builder.Configuration["AppSettings:Audeince"],
-//        //    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(
-//        //        builder.Configuration["AppSettings:Token"]))
-//        //};
-//    });
+builder.Services.AddAuthenticationCore();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["AppSettings:Issuer"],
+            ValidAudience = builder.Configuration["AppSettings:Audeince"],
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(
+                builder.Configuration["AppSettings:Token"]))
+        };
+    });
 
 var app = builder.Build();
 

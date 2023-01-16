@@ -171,7 +171,8 @@ namespace LegendariumUI.Repositories.Authentication
         }
         private string CreateToken(Player player)
         {
-            byte[] key = Convert.FromBase64String(Secret);
+            byte[] key = Convert.FromBase64String(_configuration["AppSettings:Token"]);
+            //byte[] key = Convert.FromBase64String(Secret);
 
             //var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AppSettings:Token"]));
             //var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
